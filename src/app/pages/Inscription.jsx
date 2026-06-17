@@ -1,5 +1,6 @@
 import React, { useState ,  } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+const URL_BACK = import.meta.env.VITE_URL_FRONT;
 
 
 
@@ -31,7 +32,7 @@ const Inscription = () => {
         };
 
         try {
-            const response = await fetch("http://localhost:3000/api/auth/inscription", {
+            const response = await fetch(`${URL_FRONT}/api/auth/inscription`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
