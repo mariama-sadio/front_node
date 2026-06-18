@@ -26,7 +26,7 @@ const Connexion = () => {
         };
        
         try {
-            const response = await fetch(`${URL_FRONT}/api/auth/connexion`, {
+            const response = await fetch(`${URL_BACK}/api/auth/connexion`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
