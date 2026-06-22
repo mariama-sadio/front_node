@@ -41,12 +41,7 @@ const Navbar = () => {
             Profil
           </NavLink>
 
-          <NavLink
-            to="/ajouter_question"
-            className="font-medium text-gray-700 hover:text-blue-600"
-          >
-            Poser une question
-          </NavLink>
+          
 
           {token ? (
             <button
@@ -67,7 +62,7 @@ const Navbar = () => {
 
               <NavLink
                 to="/inscription"
-                className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg font-semibold transition"
+                className="bg-violet-500 hover:bg-violet-600 text-white px-5 py-2 rounded-lg font-semibold transition"
               >
                 Inscription
               </NavLink>
