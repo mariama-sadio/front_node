@@ -1,52 +1,65 @@
-import React from 'react'
-import Connexion from './app/pages/Connexion';
-import Inscription from './app/pages/Inscription';
-import UserLayout from './app/layout/UserLayout';
-import Accueil from './app/pages/Accueil';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Profil from './app/pages/Profil';
-import Detail from './app/pages/Detail';
-import QuestionForm from './app/pages/QuestionForm';
+import React from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+import UserLayout from "./app/layout/UserLayout";
+
+import Accueil from "./app/pages/Accueil";
+import Connexion from "./app/pages/Connexion";
+import Inscription from "./app/pages/Inscription";
+import Profil from "./app/pages/Profil";
+import QuestionForm from "./app/pages/QuestionForm";
+import QuestionDetails from "./app/pages/QuestionDetails";
 
 const App = () => {
-
-     const router = createBrowserRouter([
-     
-   
-      //  route de l'accueil
-      { path:'/' , element:<UserLayout/> ,
-
-         children :[
-               {path:'/' , element:<Accueil/>},
-                //  route de la connexion
-               {path:'/connexion' , element:<Connexion/>},
-               //  route de l'inscription
-               {path:'/inscription' , element:<Inscription/>},
-                //  route de profil
-                 {path:'/profil' , element:<Profil/>},
-                //  route de creer question
-                 {path:'/ajouter_question' , element:<QuestionForm/>},
-                //  route de detail message
-               {path:'/detail:id' , element:<Detail/>},
-              // {path:'/messages' , element:<Message/>},
-
-        ]
-        }
+const router = createBrowserRouter([
+{
+path: "/",
+element: <UserLayout />,
 
 
+  children: [
+    // Accueil
+    {
+      path: "/",
+      element: <Accueil />,
+    },
+
+    // Connexion
+    {
+      path: "/connexion",
+      element: <Connexion />,
+    },
+
+    // Inscription
+    {
+      path: "/inscription",
+      element: <Inscription />,
+    },
+
+    // Profil
+    {
+      path: "/profil",
+      element: <Profil />,
+    },
+
+    // Ajouter une question
+    {
+      path: "/ajouter_question",
+      element: <QuestionForm />,
+    },
+
+    // Détail d'une question + réponses
+    {
+      path: "/question/:id",
+      element: <QuestionDetails />,
+    },
+  ],
+},
 
 
+]);
 
-    
+return <RouterProvider router={router} />;
+};
 
-
-     ])
-
-
-  return (
-     <RouterProvider router={router} />
-  )
-}
-
-export default App
+export default App;

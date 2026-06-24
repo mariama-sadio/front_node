@@ -7,21 +7,34 @@ const Questions = () => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Récupérer toutes les questions
   const recupererQuestions = async () => {
     try {
       setLoading(true);
+
+      console.log("URL API :", `${URL_BACK}/api/question`);
 
       const response = await fetch(
         `${URL_BACK}/api/question`
       );
 
+      if (!response.ok) {
+        throw new Error(
+          `Erreur HTTP : ${response.status}`
+        );
+      }
+
       const data = await response.json();
 
+      console.log("Questions :", data);
+
       setQuestions(data);
+
     } catch (error) {
-      console.log(error);
-      alert("Erreur lors du chargement des questions");
+      console.error("Erreur :", error);
+
+      alert(
+        "Erreur lors du chargement des questions"
+      );
     } finally {
       setLoading(false);
     }
@@ -34,7 +47,7 @@ const Questions = () => {
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-8">
 
-      {/* Titre */}
+      {/* En-tête */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-violet-700">
           Questions récentes
@@ -47,10 +60,10 @@ const Questions = () => {
 
       {/* Chargement */}
       {loading ? (
-        <div className="text-center py-10">
-          <h2 className="text-xl font-semibold text-violet-600">
+        <div className="flex justify-center py-10">
+          <div className="text-violet-600 text-xl font-semibold">
             Chargement...
-          </h2>
+          </div>
         </div>
       ) : questions.length === 0 ? (
         <div className="bg-white rounded-2xl shadow-md p-8 text-center">
@@ -73,7 +86,6 @@ const Questions = () => {
           ))}
         </div>
       )}
-
     </div>
   );
 };
