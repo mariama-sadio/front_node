@@ -11,55 +11,52 @@ import QuestionForm from "./app/pages/QuestionForm";
 import QuestionDetails from "./app/pages/QuestionDetails";
 
 const App = () => {
-const router = createBrowserRouter([
-{
-path: "/",
-element: <UserLayout />,
-
-
-  children: [
-    // Accueil
+  const router = createBrowserRouter([
     {
       path: "/",
-      element: <Accueil />,
+      element: <UserLayout />,
+
+      children: [
+        // Accueil
+        {
+          path: "/",
+          element: <Accueil />,
+        },
+
+        // Connexion
+        {
+          path: "/connexion",
+          element: <Connexion />,
+        },
+
+        // Inscription
+        {
+          path: "/inscription",
+          element: <Inscription />,
+        },
+
+        // Profil
+        {
+          path: "/profil",
+          element: <Profil />,
+        },
+
+        // Ajouter une question
+        {
+          path: "/ajouter_question",
+          element: <QuestionForm />,
+        },
+
+        // Détail d'une question
+        {
+          path: "/question/:id",
+          element: <QuestionDetails />,
+        },
+      ],
     },
+  ]);
 
-    // Connexion
-    {
-      path: "/connexion",
-      element: <Connexion />,
-    },
-
-    // Inscription
-    {
-      path: "/inscription",
-      element: <Inscription />,
-    },
-
-    // Profil
-    {
-      path: "/profil",
-      element: <Profil />,
-    },
-
-    // Ajouter une question
-    {
-      path: "/ajouter_question",
-      element: <QuestionForm />,
-    },
-
-    // Détail d'une question + réponses
-    {
-      path: "/question/:id",
-      element: <QuestionDetails />,
-    },
-  ],
-},
-
-
-]);
-
-return <RouterProvider router={router} />;
+  return <RouterProvider router={router} />;
 };
 
 export default App;
