@@ -85,11 +85,13 @@ const QuestionCard = ({ question, refreshQuestions }) => {
 
   return (
     <div className="bg-white rounded-3xl shadow-lg border border-violet-100 p-6 hover:shadow-2xl transition duration-300">
-      
+
       {/* Titre */}
-      <h2 className="text-2xl font-bold text-violet-700 mb-3">
+      <h2 className="text-2xl font-bold text-violet-700 mb-2">
         {question.title}
       </h2>
+
+      
 
       {/* Description */}
       <p className="text-gray-600 mb-5">
@@ -112,37 +114,46 @@ const QuestionCard = ({ question, refreshQuestions }) => {
       <div className="flex justify-between items-center border-t pt-4">
 
         <div className="text-sm text-gray-500">
-          📅 {new Date(question.createdAt).toLocaleDateString()}
+          {/* Auteur */}
+          <p className="text-gray-500 text-sm mb-4">
+            Publié par{" "}
+            <span className="font-semibold text-violet-700">
+              {question.auteur?.prenom} {question.auteur?.nom}
+            </span>
+          </p>
+      
+          <p className="text-sm text-gray-500 mt-1">
+            📅 {new Date(question.createdAt).toLocaleDateString()}
+          </p>
         </div>
 
         <div className="flex flex-wrap gap-3">
 
           <button
-            onClick={() =>
-              navigate(`/question/${question._id}`)
-            }
+            onClick={() => navigate(`/question/${question._id}`)}
             className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg transition"
           >
-            💬 Réponses
+            Réponses
           </button>
 
           <button
             onClick={modifierQuestion}
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
           >
-            ✏️ Modifier
+            Modifier
           </button>
 
           <button
             onClick={supprimerQuestion}
             className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
           >
-            🗑️ Supprimer
+            Supprimer
           </button>
 
         </div>
 
       </div>
+
     </div>
   );
 };

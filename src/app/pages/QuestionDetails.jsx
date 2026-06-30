@@ -40,62 +40,53 @@ const QuestionDetails = () => {
   // ==========================
   // Ajouter une réponse
   // ==========================
- const ajouterReponse = async () => {
-  if (!contenu.trim()) {
-    alert("Veuillez écrire une réponse");
-    return;
-  }
+  const ajouterReponse = async () => {
+    if (!contenu.trim()) {
+      alert("Veuillez écrire une réponse");
+      return;
+    }
 
-  // Récupérer l'utilisateur connecté
-  const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user"));
 
-  // Vérification
-  console.log("Utilisateur :", user);
-  alert("Utilisateur :\n" + JSON.stringify(user, null, 2));
+    if (!user) {
+      alert("Veuillez vous connecter.");
+      return;
+    }
 
-  if (!user) {
-    alert("Veuillez vous connecter.");
-    return;
-  }
+    const data = {
+      contenu,
+      question: id,
+      auteur: user._id,
+    };
 
-  const data = {
-    contenu,
-    question: id,
-    auteur: user._id,
+    try {
+      const response = await fetch(`${URL_BACK}/api/reponse/ajouter`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("Réponse ajoutée avec succès");
+
+        setContenu("");
+
+        recupererReponses();
+      } else {
+        alert(result.message);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Erreur serveur");
+    }
   };
 
-  console.log("Données envoyées :", data);
-  alert("Données envoyées :\n" + JSON.stringify(data, null, 2));
-
-  try {
-    const response = await fetch(`${URL_BACK}/api/reponse/ajouter`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const result = await response.json();
-
-    console.log(result);
-
-    if (response.ok) {
-      alert("Réponse ajoutée avec succès");
-
-      setContenu("");
-      recupererReponses();
-    } else {
-      alert(result.message);
-    }
-  } catch (error) {
-    console.log(error);
-    alert("Erreur serveur");
-  }
-};
-
   // ==========================
-  // Supprimer réponse
+  // Supprimer une réponse
   // ==========================
   const supprimerReponse = async (idReponse) => {
     if (!window.confirm("Voulez-vous supprimer cette réponse ?")) {
@@ -136,7 +127,7 @@ const QuestionDetails = () => {
 
   if (loading) {
     return (
-      <div className="text-center py-20">
+      <div className="text-center py-20 text-xl">
         Chargement...
       </div>
     );
@@ -144,60 +135,114 @@ const QuestionDetails = () => {
 
   if (!question) {
     return (
-      <div className="text-center py-20 text-red-500">
+      <div className="text-center py-20 text-red-500 text-xl">
         Question introuvable
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-violet-100 via-purple-50 to-white py-10 px-4">
 
       <div className="max-w-5xl mx-auto">
 
-        <div className="bg-white p-8 rounded-xl shadow">
+        {/* ====================== */}
+        {/* QUESTION */}
+        {/* ====================== */}
 
-          <h1 className="text-3xl font-bold">
+        <div className="bg-white rounded-3xl shadow-xl p-8">
+
+          <h1 className="text-3xl font-bold text-violet-700">
             {question.title}
           </h1>
 
-          <p className="mt-4">
+          <p className="mt-5 text-gray-700">
             {question.description}
           </p>
 
+          <div className="mt-5">
+
+            <p className="text-gray-500 text-sm mb-4">
+            Publié par{" "}
+            <span className="font-semibold text-violet-700">
+              {question.auteur?.prenom} {question.auteur?.nom}
+            </span>
+          </p>
+      
+          <p className="text-sm text-gray-500 mt-1">
+            📅 {new Date(question.createdAt).toLocaleDateString()}
+          </p>
+
+          </div>
+
         </div>
 
-        <div className="bg-white p-8 rounded-xl shadow mt-8">
+        {/* ====================== */}
+        {/* REPONSES */}
+        {/* ====================== */}
 
-          <h2 className="text-2xl font-bold mb-5">
+        <div className="bg-white rounded-3xl shadow-xl p-8 mt-8">
+
+          <h2 className="text-2xl font-bold text-violet-700 mb-6">
             Réponses ({reponses.length})
           </h2>
 
           {reponses.length === 0 ? (
-            <p>Aucune réponse.</p>
+
+            <p className="text-gray-500">
+              Aucune réponse pour le moment.
+            </p>
+
           ) : (
+
             reponses.map((reponse) => (
+
               <div
                 key={reponse._id}
-                className="border rounded-lg p-4 mb-4"
+                className="border border-violet-100 rounded-xl p-5 mb-5 bg-violet-50"
               >
-                <p>{reponse.contenu}</p>
+
+                <p className="text-gray-700">
+                  {reponse.contenu}
+                </p>
+
+                <div className="mt-4">
+
+                  <p className="text-gray-500 text-sm mb-4">
+            Publié par{" "}
+            <span className="font-semibold text-violet-700">
+              {question.auteur?.prenom} {question.auteur?.nom}
+            </span>
+          </p>
+      
+          <p className="text-sm text-gray-500 mt-1">
+            📅 {new Date(question.createdAt).toLocaleDateString()}
+          </p>
+
+                </div>
 
                 <button
                   onClick={() => supprimerReponse(reponse._id)}
-                  className="mt-3 bg-red-500 text-white px-4 py-2 rounded"
+                  className="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
                 >
                   Supprimer
                 </button>
+
               </div>
+
             ))
+
           )}
 
         </div>
 
-        <div className="bg-white p-8 rounded-xl shadow mt-8">
+        {/* ====================== */}
+        {/* AJOUTER UNE REPONSE */}
+        {/* ====================== */}
 
-          <h2 className="text-2xl font-bold mb-4">
+        <div className="bg-white rounded-3xl shadow-xl p-8 mt-8">
+
+          <h2 className="text-2xl font-bold text-violet-700 mb-4">
             Ajouter une réponse
           </h2>
 
@@ -205,12 +250,13 @@ const QuestionDetails = () => {
             rows="6"
             value={contenu}
             onChange={(e) => setContenu(e.target.value)}
-            className="w-full border rounded-lg p-3"
+            placeholder="Écrivez votre réponse..."
+            className="w-full border-2 border-violet-200 rounded-xl p-4 focus:outline-none focus:border-violet-600"
           />
 
           <button
             onClick={ajouterReponse}
-            className="mt-4 bg-violet-600 text-white px-6 py-3 rounded-lg"
+            className="mt-5 bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-xl"
           >
             Publier la réponse
           </button>
