@@ -16,12 +16,8 @@ const QuestionDetails = () => {
   // ==========================
   const recupererQuestion = async () => {
     try {
-      const response = await fetch(
-        `${URL_BACK}/api/question/${id}`
-      );
-
+      const response = await fetch(`${URL_BACK}/api/question/${id}`);
       const data = await response.json();
-
       setQuestion(data);
     } catch (error) {
       console.log(error);
@@ -33,12 +29,8 @@ const QuestionDetails = () => {
   // ==========================
   const recupererReponses = async () => {
     try {
-      const response = await fetch(
-        `${URL_BACK}/api/reponse/${id}`
-      );
-
+      const response = await fetch(`${URL_BACK}/api/reponse/${id}`);
       const data = await response.json();
-
       setReponses(data);
     } catch (error) {
       console.log(error);
@@ -46,94 +38,69 @@ const QuestionDetails = () => {
   };
 
   // ==========================
-  // Ajouter réponse
+  // Ajouter une réponse
   // ==========================
-  const ajouterReponse = async () => {
-    if (!contenu.trim()) {
-      alert("Veuillez écrire une réponse");
-      return;
-    }
+ const ajouterReponse = async () => {
+  if (!contenu.trim()) {
+    alert("Veuillez écrire une réponse");
+    return;
+  }
 
-    try {
-      const response = await fetch(
-        `${URL_BACK}/api/reponse/ajouter`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            contenu,
-            question: id,
-          }),
-        }
-      );
+  // Récupérer l'utilisateur connecté
+  const user = JSON.parse(localStorage.getItem("user"));
 
-      const result = await response.json();
+  // Vérification
+  console.log("Utilisateur :", user);
+  alert("Utilisateur :\n" + JSON.stringify(user, null, 2));
 
-      if (response.ok) {
-        alert("Réponse ajoutée avec succès ✅");
+  if (!user) {
+    alert("Veuillez vous connecter.");
+    return;
+  }
 
-        setContenu("");
-
-        recupererReponses();
-      } else {
-        alert(result.message);
-      }
-    } catch (error) {
-      console.log(error);
-      alert("Erreur serveur");
-    }
+  const data = {
+    contenu,
+    question: id,
+    auteur: user._id,
   };
 
-  // ==========================
-  // Modifier réponse
-  // ==========================
-  const modifierReponse = async (reponse) => {
-    const nouveauContenu = prompt(
-      "Modifier votre réponse",
-      reponse.contenu
-    );
+  console.log("Données envoyées :", data);
+  alert("Données envoyées :\n" + JSON.stringify(data, null, 2));
 
-    if (!nouveauContenu) return;
+  try {
+    const response = await fetch(`${URL_BACK}/api/reponse/ajouter`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
-    try {
-      const response = await fetch(
-        `${URL_BACK}/api/reponse/${reponse._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            contenu: nouveauContenu,
-          }),
-        }
-      );
+    const result = await response.json();
 
-      const result = await response.json();
+    console.log(result);
 
-      if (response.ok) {
-        alert("Réponse modifiée ✅");
-        recupererReponses();
-      } else {
-        alert(result.message);
-      }
-    } catch (error) {
-      console.log(error);
-      alert("Erreur lors de la modification");
+    if (response.ok) {
+      alert("Réponse ajoutée avec succès");
+
+      setContenu("");
+      recupererReponses();
+    } else {
+      alert(result.message);
     }
-  };
+  } catch (error) {
+    console.log(error);
+    alert("Erreur serveur");
+  }
+};
 
   // ==========================
   // Supprimer réponse
   // ==========================
   const supprimerReponse = async (idReponse) => {
-    const confirmation = window.confirm(
-      "Voulez-vous supprimer cette réponse ?"
-    );
-
-    if (!confirmation) return;
+    if (!window.confirm("Voulez-vous supprimer cette réponse ?")) {
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -146,30 +113,30 @@ const QuestionDetails = () => {
       const result = await response.json();
 
       if (response.ok) {
-        alert("Réponse supprimée ✅");
+        alert("Réponse supprimée");
         recupererReponses();
       } else {
         alert(result.message);
       }
     } catch (error) {
       console.log(error);
-      alert("Erreur lors de la suppression");
+      alert("Erreur serveur");
     }
   };
 
   useEffect(() => {
-    const chargerDonnees = async () => {
+    const charger = async () => {
       await recupererQuestion();
       await recupererReponses();
       setLoading(false);
     };
 
-    chargerDonnees();
+    charger();
   }, [id]);
 
   if (loading) {
     return (
-      <div className="text-center py-20 text-xl font-bold text-violet-700">
+      <div className="text-center py-20">
         Chargement...
       </div>
     );
@@ -177,129 +144,73 @@ const QuestionDetails = () => {
 
   if (!question) {
     return (
-      <div className="text-center py-20 text-red-500 text-xl">
+      <div className="text-center py-20 text-red-500">
         Question introuvable
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-100 via-purple-50 to-white py-10 px-4">
+    <div className="min-h-screen bg-gray-100 p-8">
 
       <div className="max-w-5xl mx-auto">
 
-        {/* QUESTION */}
-        <div className="bg-white rounded-3xl shadow-xl p-8">
+        <div className="bg-white p-8 rounded-xl shadow">
 
-          <h1 className="text-3xl font-bold text-violet-700 mb-4">
+          <h1 className="text-3xl font-bold">
             {question.title}
           </h1>
 
-          <p className="text-gray-700 text-lg">
+          <p className="mt-4">
             {question.description}
-          </p>
-
-          <div className="flex flex-wrap gap-2 mt-5">
-            {question.tags?.map((tag, index) => (
-              <span
-                key={index}
-                className="bg-violet-100 text-violet-700 px-3 py-1 rounded-full"
-              >
-                #{tag}
-              </span>
-            ))}
-          </div>
-
-          <p className="text-gray-500 mt-4">
-            📅{" "}
-            {new Date(
-              question.createdAt
-            ).toLocaleDateString()}
           </p>
 
         </div>
 
-        {/* REPONSES */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 mt-8">
+        <div className="bg-white p-8 rounded-xl shadow mt-8">
 
-          <h2 className="text-2xl font-bold text-violet-700 mb-6">
+          <h2 className="text-2xl font-bold mb-5">
             Réponses ({reponses.length})
           </h2>
 
           {reponses.length === 0 ? (
-            <p className="text-gray-500">
-              Aucune réponse pour le moment.
-            </p>
+            <p>Aucune réponse.</p>
           ) : (
-            <div className="space-y-4">
-              {reponses.map((reponse) => (
-                <div
-                  key={reponse._id}
-                  className="border border-violet-100 bg-violet-50 rounded-xl p-4"
+            reponses.map((reponse) => (
+              <div
+                key={reponse._id}
+                className="border rounded-lg p-4 mb-4"
+              >
+                <p>{reponse.contenu}</p>
+
+                <button
+                  onClick={() => supprimerReponse(reponse._id)}
+                  className="mt-3 bg-red-500 text-white px-4 py-2 rounded"
                 >
-                  <p className="text-gray-700">
-                    {reponse.contenu}
-                  </p>
-
-                  <div className="flex justify-between items-center mt-4">
-
-                    <p className="text-sm text-gray-400">
-                      📅{" "}
-                      {new Date(
-                        reponse.createdAt
-                      ).toLocaleDateString()}
-                    </p>
-
-                    <div className="flex gap-2">
-
-                      <button
-                        onClick={() =>
-                          modifierReponse(reponse)
-                        }
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg"
-                      >
-                        ✏️ Modifier
-                      </button>
-
-                      <button
-                        onClick={() =>
-                          supprimerReponse(reponse._id)
-                        }
-                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg"
-                      >
-                        🗑️ Supprimer
-                      </button>
-
-                    </div>
-
-                  </div>
-                </div>
-              ))}
-            </div>
+                  Supprimer
+                </button>
+              </div>
+            ))
           )}
 
         </div>
 
-        {/* AJOUTER REPONSE */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 mt-8">
+        <div className="bg-white p-8 rounded-xl shadow mt-8">
 
-          <h2 className="text-2xl font-bold text-violet-700 mb-4">
+          <h2 className="text-2xl font-bold mb-4">
             Ajouter une réponse
           </h2>
 
           <textarea
             rows="6"
             value={contenu}
-            onChange={(e) =>
-              setContenu(e.target.value)
-            }
-            placeholder="Écrivez votre réponse..."
-            className="w-full border-2 border-violet-200 rounded-xl p-4 focus:outline-none focus:border-violet-500"
+            onChange={(e) => setContenu(e.target.value)}
+            className="w-full border rounded-lg p-3"
           />
 
           <button
             onClick={ajouterReponse}
-            className="mt-4 bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-xl"
+            className="mt-4 bg-violet-600 text-white px-6 py-3 rounded-lg"
           >
             Publier la réponse
           </button>

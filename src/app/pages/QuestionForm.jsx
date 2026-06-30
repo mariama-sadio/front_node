@@ -37,7 +37,7 @@ const QuestionForm = () => {
       tags: tags.split(",").map((tag) => tag.trim()),
 
       // Selon ton backend
-      auteur: user.id,
+      auteur: user._id,
     };
 
     // Afficher les données envoyées
