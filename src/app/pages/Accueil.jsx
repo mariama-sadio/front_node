@@ -48,33 +48,18 @@ const Accueil = () => {
           </div>
 
           <div className="bg-white p-6 rounded-2xl shadow-md">
-            <h2 className="text-3xl font-bold text-blue-600">300+</h2>
+            <h2 className="text-3xl font-bold text-blue-600">30+</h2>
             <p className="text-gray-600">Réponses</p>
           </div>
 
           <div className="bg-white p-6 rounded-2xl shadow-md">
-            <h2 className="text-3xl font-bold text-green-600">80+</h2>
+            <h2 className="text-3xl font-bold text-green-600">8+</h2>
             <p className="text-gray-600">Membres</p>
           </div>
 
         </div>
       </div>
 
-      {/* Barre de recherche */}
-      <div className="max-w-7xl mx-auto px-6 mb-8">
-        <input
-          type="text"
-          placeholder="🔍 Rechercher une question..."
-          className="w-full p-4 rounded-xl border border-gray-300 focus:ring-2 focus:ring-violet-500 outline-none bg-white shadow-sm"
-        />
-      </div>
-
-      {/* Titre section */}
-      <div className="max-w-7xl mx-auto px-6 mb-6">
-        <h2 className="text-3xl font-bold text-gray-800">
-          Questions récentes
-        </h2>
-      </div>
 
       {/* Liste des questions */}
       <div className="max-w-7xl mx-auto px-6 pb-10">
